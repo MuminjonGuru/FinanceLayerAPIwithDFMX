@@ -22,6 +22,7 @@ type
     RESTRequest1: TRESTRequest;
     RESTResponse1: TRESTResponse;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     RctNewsCard: TRectangle;
     LabelTitle: TLabel;
@@ -154,6 +155,34 @@ begin
     LblURLList.Free;
     MemoList.Free;
   end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  // get the date and format it
+  var MyDate := FormatDateTime('yyyy-mm-dd', DateEdit1.Date);
+
+  RESTClient1.ResetToDefaults;
+  RESTClient1.Accept := 'application/json, text/plain; q=0.9, text/html;q=0.8,';
+  RESTClient1.AcceptCharset := 'UTF-8, *;q=0.8';
+  RESTClient1.BaseURL := 'http://api.financelayer.com/v1/news?access_key=9c4d903a906c681e9db08724d073c910';
+  RESTClient1.HandleRedirects := True;
+  RESTClient1.RaiseExceptionOn500 := False;
+
+  // pass the date as a parameter
+  RESTRequest1.Resource := Format('&date%s', [MyDate]);
+
+  RESTRequest1.Client := RESTClient1;
+  RESTRequest1.Response := RESTResponse1;
+  RESTRequest1.SynchronizedEvents := False;
+  RESTResponse1.ContentType := 'application/json';
+
+  RESTRequest1.Execute;
+
+  //------------------------------------------------------------------//
+  // and then you can create UI components to show the historical data//
+  //------------------------------------------------------------------//
+
 end;
 
 end.
